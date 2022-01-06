@@ -1,0 +1,78 @@
+---
+title: "LAB 1 HW"
+output: html_document
+---
+
+
+#1.
+completed survey
+
+#2. 
+R is a programming language, when you download it you get the language information, and a little window to write and run yur code, RStudio runs R language (needs R to work) and uses it to program a variety of packages that are can be loaded as library and used for data analysis, plot generation, and stats
+
+#3.
+About me is edited and commited
+
+#4. 
+```{r}
++5-3*2
+```
+```{r}
++8/2**2
+```
+#5.
+```{r}
+(+5-3)*2
+```
+```{r}
+(+8/2)*2*2
+```
+#6. Make a pie
+```{r}
+pi <- 3.14159265359
+```
+
+#7. Make 2 pies
+```{r}
+pi*2
+```
+#8. Help
+```{r}
+?mean
+```
+shows up as a manual under HELP
+
+#9. Vector mean
+```{r}
+x <- c(2, 8, 6, 6, 7, 4, 9, 9, 9, 10)
+
+mean(x)
+median(x)
+
+```
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
