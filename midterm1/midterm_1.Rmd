@@ -1,0 +1,135 @@
+---
+title: "Midterm 1"
+author: "Christian Flynn Atallah"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: spacelab
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+Answer the following questions and complete the exercises in RMarkdown. Please embed all of your code and push your final work to your repository. Your code should be organized, clean, and run free from errors. Remember, you must remove the `#` for any included code chunks to run. Be sure to add your name to the author header above. You may use any resources to answer these questions (including each other), but you may not post questions to Open Stacks or external help sites. There are 15 total questions, each is worth 2 points.  
+
+Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
+
+This exam is due by 12:00p on Thursday, January 27.  
+
+## Load the tidyverse
+If you plan to use any other libraries to complete this assignment then you should load them here.
+```{r}
+library(tidyverse)
+library(dplyr)
+library(skimr)
+```
+
+## Questions  
+Wikipedia's definition of [data science](https://en.wikipedia.org/wiki/Data_science): "Data science is an interdisciplinary field that uses scientific methods, processes, algorithms and systems to extract knowledge and insights from noisy, structured and unstructured data, and apply knowledge and actionable insights from data across a broad range of application domains."  
+
+1. (2 points) Consider the definition of data science above. Although we are only part-way through the quarter, what specific elements of data science do you feel we have practiced? Provide at least one specific example.  
+#I think so far an element we have spent the most time on, would be data manipulation, that is to say, making data more manageable to work with, ie. moving between data classes, handling NA values, sorting data values by max and min as well as grouping and filtering variables of interest. One example appeared on HW 6 where we wanted to look at which country produced the most of a specific fish species, over a certain amount of years, so I filtered the original data set for those years, and that type of fish, and then grouped by country so we could look at the sum (or average depending how you did it) of fish yeild for that country for those years.
+
+2. (2 points) What is the most helpful or interesting thing you have learned so far in BIS 15L? What is something that you think needs more work or practice?  
+#So far the most helpful thing I have have learned is the filter command, I actually work in a lab where I do some data analysis and I know I will be using this frequently, lets say your doing differential gene expression but only want to look at values for one specific gene out of ~28000 , its very helpful. I want to get better at piping ">%>" and just making less objects and writing more concise, with less processing, and less steps required.
+
+In the midterm 1 folder there is a second folder called `data`. Inside the `data` folder, there is a .csv file called `ElephantsMF`. These data are from Phyllis Lee, Stirling University, and are related to Lee, P., et al. (2013), "Enduring consequences of early experiences: 40-year effects on survival and success among African elephants (Loxodonta africana)," Biology Letters, 9: 20130011. [kaggle](https://www.kaggle.com/mostafaelseidy/elephantsmf).  
+
+3. (2 points) Please load these data as a new object called `elephants`. Use the function(s) of your choice to get an idea of the structure of the data. Be sure to show the class of each variable.
+```{r}
+setwd('~')
+elephants = read.csv('~/Midtermbis15/ElephantsMF.csv')
+glimpse(elephants)
+skim(elephants)
+
+```
+4. (2 points) Change the names of the variables to lower case and change the class of the variable `sex` to a factor.
+```{r}
+names(elephants)[names(elephants) == 'Age'] <- "age"
+names(elephants)[names(elephants) == 'Height'] <- "height"
+names(elephants)[names(elephants) == 'Sex'] <- "sex"
+elephants$sex <- as.factor(elephants$sex)
+```
+
+
+5. (2 points) How many male and female elephants are represented in the data?
+```{r}
+table(elephants$sex)
+#150 females represented and 138 males represented
+```
+6. (2 points) What is the average age of all elephants in the data?
+```{r}
+mean(elephants$age)
+#average age is 10.97132
+```
+7. (2 points) How does the average age and height of elephants compare by sex?
+
+```{r}
+males <- filter(elephants, sex == 'M')
+females <- filter(elephants, sex == 'F')
+skim(males)
+skim(females)
+# females mean age = 12.8 and mean height = 190 whereas males mean age = 8.95 and mean height = 185, so males on average are smaller and live shorter lives than females
+
+```
+
+8. (2 points) How does the average height of elephants compare by sex for individuals over 20 years old. Include the min and max height as well as the number of individuals in the sample as part of your analysis.  
+```{r}
+old_elephants <- filter(elephants, age >= 20)
+old_males <- filter(old_elephants, sex == 'M')
+old_females <- filter(old_elephants, sex == 'F')
+skim(old_males)
+skim(old_females)
+max(old_elephants$height)
+min(old_elephants$height)
+# average height of old males = 270, average height of females = 232
+# number of individuals = 13 old males + 37 old females = 40 individuals in the analysis
+# max height is 304.06 and min height is 192.54
+```
+For the next series of questions, we will use data from a study on vertebrate community composition and impacts from defaunation in [Gabon, Africa](https://en.wikipedia.org/wiki/Gabon). One thing to notice is that the data include 24 separate transects. Each transect represents a path through different forest management areas.  
+
+Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate community composition and diversity declines along a defaunation gradient radiating from rural villages in Gabon. _Journal of Applied Ecology_. 2016. This paper, along with a description of the variables is included inside the midterm 1 folder.  
+
+9. (2 points) Load `IvindoData_DryadVersion.csv` and use the function(s) of your choice to get an idea of the overall 
+```{r}
+setwd('~')
+ivindo = read.csv('~/Midtermbis15/IvindoData_DryadVersion.csv')
+skim(ivindo)
+glimpse(ivindo)
+```
+10. (4 points) For the transects with high and moderate hunting intensity, how does the average diversity of birds and mammals compare?
+```{r}
+high_hunt <- filter(ivindo, HuntCat == 'High')
+moderate_hunt <- filter(ivindo, HuntCat == 'Moderate')
+mean(high_hunt$Diversity_BirdSpecies)
+mean(high_hunt$Diversity_MammalSpecies)
+mean(moderate_hunt$Diversity_BirdSpecies)
+mean(moderate_hunt$Diversity_MammalSpecies)
+# high hunt transects Bird Diversity mean = 1.6 , Mammal Diversity mean = 1.74
+# moderate hunt transects Bird Diversity mean = 1.62 , Mammal Diversity mean = 1.68
+# so high hunt transects receive higher scores in Mammal Diversity but low in Bird Diversity 
+```
+
+11. (4 points) One of the conclusions in the study is that the relative abundance of animals drops off the closer you get to a village. Let's try to reconstruct this (without the statistics). How does the relative abundance (RA) of apes, birds, elephants, monkeys, rodents, and ungulates compare between sites that are less than 3km from a village to sites that are greater than 25km from a village? The variable `Distance` measures the distance of the transect from the nearest village. Hint: try using the `across` operator.  
+```{r}
+close_to_village <- filter(ivindo, Distance <= 3)
+far_from_village <- filter(ivindo, Distance >= 25)
+close_to_village$meanRA <- rowMeans(close_to_village[ , c(10,11,12,13,14,15)], na.rm=TRUE)
+mean(close_to_village$meanRA)
+far_from_village$meanRA <- rowMeans(far_from_village[ , c(10,11,12,13,14,15)], na.rm=TRUE)
+mean(far_from_village$meanRA)
+# far _from RAmean = 16.25 and close_to RAmean = 16.8. okay so from this it looks like RA is higher, but just slightly, near the village, but also might not be signicant.
+```
+12. (4 points) Based on your interest, do one exploratory analysis on the `gabon` data of your choice. This analysis needs to include a minimum of two functions in `dplyr.`
+```{r}
+#what is the mean RA of villages not too far and too close but just the right distance from village ie. less than 25km but more than 3km away
+
+just_right <- filter(ivindo, Distance <= 25) 
+actually_just_right <- filter(ivindo, Distance >= 3)
+actually_just_right$meanRA <- rowMeans(actually_just_right[ , c(10,11,12,13,14,15)], na.rm=TRUE)
+mean(actually_just_right$meanRA)
+# mean RA= 16.47, interesting, it is right between the far and close too villages
+```
