@@ -27,7 +27,7 @@ library(janitor)
 The package `here` is a nice option for keeping directories clear when loading files. I will demonstrate below and let you decide if it is something you want to use.  
 ```{r}
 #install.packages("here")
-install.packages("here")
+#install.packages("here")
 ```
 
 ## Data
@@ -43,14 +43,16 @@ glimpse(sydneybeaches)
 
 If you want to try `here`, first notice the output when you load the `here` library. It gives you information on the current working directory. You can then use it to easily and intuitively load files.
 ```{r}
-library(here)
+names(sydneybeaches)
+#no, capitals.\, lets use janitor to clean names
+sydneybeaches <-read.csv('~/Midtermbis15/sydneybeaches.csv') %>% janitor::clean_names()
+
+names(sydneybeaches)
+
 ```
 
 The quotes show the folder structure from the root directory.
-```{r}
-sydneybeaches %>% janitor::clean_names()
-#sydneybeaches <-read_csv(here("lab8", "data", "sydneybeaches.csv")) %>% janitor::clean_names()
-```
+
 
 2. Are these data "tidy" per the definitions of the tidyverse? How do you know? Are they in wide or long format?
 
@@ -59,34 +61,46 @@ sydneybeaches %>% janitor::clean_names()
 
 3. We are only interested in the variables site, date, and enterococci..cfu.100ml. Make a new object focused on these variables only. Name the object `sydneybeaches_long`
 ```{r}
-sydneybeaches_long <- sydneybeaches[,c(4,7,8)]
+sydneybeaches_long <- sydneybeaches %>% 
+  select(site, date, enterococci_cfu_100ml)
+sydneybeaches_long
 ```
 
 4. Pivot the data such that the dates are column names and each beach only appears once. Name the object `sydneybeaches_wide`
 ```{r}
 sydneybeaches_wide <- sydneybeaches_long %>% 
-pivot_wider(names_from = "Date", values_from = "Enterococci..cfu.100ml.")
+  pivot_wider(names_from=date,
+              values_from=enterococci_cfu_100ml)
+view(sydneybeaches_wide)
 ```
 
 5. Pivot the data back so that the dates are data and not column names.
 ```{r}
-sydneybeaches_long <- sydneybeaches_wide %>% 
-pivot_longer(!Site, names_to = "Date")
+pivot_back <- sydneybeaches_wide %>% 
+  pivot_longer(-site,
+               names_to="date",
+               values_to="enterococci_cfu_100ml")
 ```
 
 6. We haven't dealt much with dates yet, but separate the date into columns day, month, and year. Do this on the `sydneybeaches_long` data.
 ```{r}
-sydneybeaches_long_new <- separate(sydneybeaches_long, Date, c("Day", "Month", "Year"))
+sydneybeaches_long %>% 
+  separate(date, into=c("day", "month", "year"), sep="/")
 
 ```
 
 7. What is the average `enterococci_cfu_100ml` by year for each beach. Think about which data you will use- long or wide.
 ```{r}
- sydneysbeaches_wide_new <- sydneybeaches_long_new %>% 
-pivot_wider(names_from = "Year", values_from = "Enterococci..cfu.100ml.")
-skim(sydneysbeaches_wide_new)
+#sydneysbeaches_wide_new <- sydneybeaches_long_new %>% 
+#pivot_wider(names_from = "Year", values_from = "Enterococci..cfu.100ml.")
+#skim(sydneysbeaches_wide_new)
 #2013=50.6 2014=26.3 2015=31.2 2016=42 2017=20.7 2018=33.1
 
+mean_enterococky <- sydneybeaches_long %>% 
+  separate(date, into=c("day", "month", "year"), sep="/") %>% 
+  group_by(site, year) %>% 
+  summarize(mean_enterococci_cfu_100ml=mean(enterococci_cfu_100ml, na.rm=T))
+  
 
 ```
 8. Make the output from question 7 easier to read by pivoting it to wide format.
@@ -94,9 +108,12 @@ skim(sydneysbeaches_wide_new)
 
 9. What was the most polluted beach in 2018?
 ```{r}
-sydneysbeaches_wide_new[,3]<- NULL
-sydneysbeaches_wide_new[,2]<- NULL
-new_new <- data.frame(site = unique(sydneysbeaches_wide_new$Site), mean_value = sapply(split(sydneysbeaches_wide_new$`2018`, sydneysbeaches_wide_new$Site), mean))
+mean_enterococky %>% 
+  pivot_wider(names_from=site,
+              values_from=mean_enterococci_cfu_100ml)
+#sydneysbeaches_wide_new[,3]<- NULL
+#sydneysbeaches_wide_new[,2]<- NULL
+#new_new <- data.frame(site = unique(sydneysbeaches_wide_new$Site), mean_value = sapply(split(sydneysbeaches_wide_new$`2018`, sydneysbeaches_wide_new$Site), mean))
 ```
 
 10. Please complete the class project survey at: [BIS 15L Group Project](https://forms.gle/H2j69Z3ZtbLH3efW6)
