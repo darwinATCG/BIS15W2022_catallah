@@ -114,18 +114,18 @@ colleges %>%
 
 8. The column titled `INSTNM` is the institution name. We are only interested in the University of California colleges. Make a new data frame that is restricted to UC institutions. You can remove `Hastings College of Law` and `UC San Francisco` as we are only interested in undergraduate institutions.
 ```{r}
-univ_calithornia <- colleges %>% 
-  filter_all(any_vars(str_detect(., pattern = "University of California")))
-univ_calif
+#univ_calithornia <- colleges %>% 
+  #filter_all(any_vars(str_detect(., pattern = "University of California")))
+#univ_calif
 
 
 ```
 
 Remove `Hastings College of Law` and `UC San Francisco` and store the final data frame as a new object `univ_calif_final`.
 ```{r}
-univ_calithornia_final <- univ_calithornia %>% 
-  filter(city!="San Francisco")
-univ_calithornia_final
+#univ_calithornia_final <- univ_calithornia %>% 
+  #filter(city!="San Francisco")
+#univ_calithornia_final
 ```
 
 Use `separate()` to separate institution name into two new columns "UNIV" and "CAMPUS".
